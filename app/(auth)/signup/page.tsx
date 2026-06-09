@@ -1,6 +1,8 @@
-export default function SignUpPage() {
-  return <div className="container">
-    
-  </div>
+import SignUpForm from "@/components/auth/SignupForm"
+export default function SignUpage() {
+  return (
+    <div className="">
+      <SignUpForm />
+    </div>
+  )
 }
-

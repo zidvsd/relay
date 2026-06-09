@@ -5,7 +5,7 @@ import { Star } from "lucide-react"
 const testimonials = [
   {
     quote:
-      "FreelanceFlow has completely transformed how I handle my projects. I no longer lose track of invoices or client details. It's a game-changer for my sanity.",
+      "Relay has completely transformed how I handle my projects. I no longer lose track of invoices or client details. It's a game-changer for my sanity.",
     name: "Sarah Jenkins",
     role: "Product Designer",
     avatar:
@@ -21,7 +21,7 @@ const testimonials = [
   },
   {
     quote:
-      "Simple, elegant, and powerful. I tried every project manager out there, but FreelanceFlow is the only one that felt right for a solo pro.",
+      "Simple, elegant, and powerful. I tried every project manager out there, but Relay is the only one that felt right for a solo pro.",
     name: "Elena Rodriguez",
     role: "Content Strategist",
     avatar:

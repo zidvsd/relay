@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { BadgeCheck, Globe, MessageCircle, Mail } from "lucide-react"
-
+import Logo from "@/app/icon.svg"
+import Image from "next/image"
 const footerLinks = {
   Product: ["Features", "Pricing", "Templates", "Integrations"],
   Company: ["About Us", "Careers", "Blog", "Contact"],
@@ -20,13 +21,9 @@ export function Footer() {
         <div className="mb-16 grid grid-cols-2 gap-12 md:grid-cols-5">
           {/* Brand */}
           <div className="col-span-2 space-y-6">
-            <div className="flex items-center gap-3">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-                <BadgeCheck className="h-5 w-5 text-primary-foreground" />
-              </div>
-              <span className="text-xl font-bold text-primary">
-                FreelanceFlow
-              </span>
+            <div className="flex items-center gap-2">
+              <Image src={Logo} alt="logo" className="w-4" />
+              <span className="text-2xl font-bold text-primary">Relay</span>
             </div>
             <p className="max-w-xs text-sm leading-relaxed text-muted-foreground">
               The all-in-one workspace for the modern freelancer. Organize
@@ -69,7 +66,7 @@ export function Footer() {
         {/* Bottom bar */}
         <div className="flex flex-col items-center justify-between gap-6 border-t border-border pt-10 md:flex-row">
           <p className="text-xs text-muted-foreground">
-            © 2024 FreelanceFlow Inc. All rights reserved.
+            © 2024 Relay Inc. All rights reserved.
           </p>
           <div className="flex gap-8">
             {["Cookies", "Status", "Accessibility"].map((item) => (

@@ -9,6 +9,7 @@ import {
   TrendingUp,
   CheckCircle2,
   MoreVertical,
+  WalletCards,
 } from "lucide-react"
 
 export function HeroSection() {
@@ -39,9 +40,9 @@ export function HeroSection() {
             </h1>
 
             <p className="max-w-lg text-lg leading-relaxed text-muted-foreground">
-              FreelanceFlow helps freelancers organize work, track progress, and
-              manage income effortlessly. Spend less time on admin and more time
-              on creating.
+              Relay helps freelancers organize work, track progress, and manage
+              income effortlessly. Spend less time on admin and more time on
+              creating.
             </p>
 
             <div className="flex flex-wrap gap-4 pt-2">
@@ -69,13 +70,15 @@ export function HeroSection() {
             <div className="absolute h-120 w-120 translate-x-4 -rotate-3 rounded-3xl border border-border bg-card/40 shadow-2xl backdrop-blur-sm" />
 
             {/* Earnings */}
-            <Card className="animate-float1 absolute top-10 right-0 w-64 shadow-lg">
+            <Card className="absolute top-10 right-0 w-64 animate-bounce-slow shadow-lg">
               <CardContent className="p-5">
                 <div className="mb-3 flex items-center justify-between">
                   <span className="text-xs text-muted-foreground">
                     Total Earnings
                   </span>
-                  <span className="text-sm text-primary">💳</span>
+                  <span className="inline-flex animate-bounce-slow items-center justify-center text-primary">
+                    <WalletCards />
+                  </span>
                 </div>
 
                 <div className="text-2xl font-bold">$12,450.00</div>
@@ -88,7 +91,7 @@ export function HeroSection() {
             </Card>
 
             {/* Kanban */}
-            <Card className="animate-float2 absolute bottom-10 left-0 w-72 shadow-lg">
+            <Card className="absolute bottom-10 left-0 w-72 animate-bounce-slow shadow-lg">
               <CardContent className="p-5">
                 <div className="mb-4 flex items-center gap-2 border-b border-border pb-2">
                   <div className="h-2 w-2 rounded-full bg-chart-2" />
@@ -125,7 +128,7 @@ export function HeroSection() {
             </Card>
 
             {/* Clients */}
-            <Card className="animate-float3 absolute top-1/2 left-1/2 w-80 -translate-x-1/2 -translate-y-1/2 scale-110 shadow-2xl">
+            <Card className="absolute top-1/2 left-1/2 w-80 -translate-x-1/2 -translate-y-1/2 scale-110 animate-bounce-slow shadow-2xl">
               <CardContent className="p-6">
                 <h3 className="mb-4 font-semibold">Active Clients</h3>
 
@@ -170,7 +173,7 @@ export function HeroSection() {
             </Card>
 
             {/* Invoice */}
-            <Card className="animate-float1 absolute right-4 bottom-20 w-56 shadow-md">
+            <Card className="absolute right-4 bottom-20 w-56 animate-bounce-slow shadow-md">
               <CardContent className="p-4">
                 <div className="flex items-center gap-3">
                   <div className="rounded-lg bg-green-100 p-2 text-green-700">
@@ -191,49 +194,6 @@ export function HeroSection() {
           </div>
         </div>
       </div>
-
-      {/* animations */}
-      <style jsx>{`
-        .animate-float1 {
-          animation: float1 6s ease-in-out infinite;
-        }
-        .animate-float2 {
-          animation: float2 8s ease-in-out infinite;
-        }
-        .animate-float3 {
-          animation: float3 7s ease-in-out infinite;
-        }
-
-        @keyframes float1 {
-          0%,
-          100% {
-            transform: translateY(0px);
-          }
-          50% {
-            transform: translateY(-15px);
-          }
-        }
-
-        @keyframes float2 {
-          0%,
-          100% {
-            transform: translateY(0px);
-          }
-          50% {
-            transform: translateY(-20px);
-          }
-        }
-
-        @keyframes float3 {
-          0%,
-          100% {
-            transform: translateY(0px) translateX(-50%);
-          }
-          50% {
-            transform: translateY(-12px) translateX(-50%);
-          }
-        }
-      `}</style>
     </section>
   )
 }

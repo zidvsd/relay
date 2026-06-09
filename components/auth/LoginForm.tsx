@@ -1,4 +1,7 @@
+"use client"
+
 import { Button } from "@/components/ui/button"
+import Link from "next/link"
 import {
   Card,
   CardContent,
@@ -15,8 +18,46 @@ import {
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
+import Image from "next/image"
+import Logo from "@/app/icon.svg"
+import { supabase } from "@/lib/supabase/supabaseClient"
+import { useState } from "react"
+import { toast } from "sonner"
 
-const LoginForm = () => {
+export default function LoginForm() {
+  const [loading, setLoading] = useState(false)
+
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setLoading(true)
+
+    const formData = new FormData(e.currentTarget)
+
+    const email = formData.get("email") as string
+    const password = formData.get("password") as string
+
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: email,
+      password: password,
+    })
+    setLoading(false)
+
+    if (error) {
+      toast.error(error.message)
+    } else {
+      toast.success("Logged in successfully!")
+    }
+  }
+
+  const signInWithGoogle = async () => {
+    await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+      },
+    })
+  }
+
   return (
     <section className="relative flex min-h-screen items-center justify-center bg-foreground dark:bg-background">
       <div className="pointer-events-none absolute inset-0 right-0 hidden overflow-hidden md:block">
@@ -30,17 +71,8 @@ const LoginForm = () => {
         <Card className="relative max-w-lg gap-6 px-6 py-8 sm:p-12">
           <CardHeader className="gap-6 p-0 text-center">
             <div className="mx-auto">
-              <a href="">
-                <img
-                  src="https://images.shadcnspace.com/assets/logo/logo-icon-black.svg"
-                  alt="shadcnspace"
-                  className="h-10 w-10 dark:hidden"
-                />
-                <img
-                  src="https://images.shadcnspace.com/assets/logo/logo-icon-white.svg"
-                  alt="shadcnspace"
-                  className="hidden h-10 w-10 dark:block"
-                />
+              <a href="/">
+                <Image src={Logo} className="w-4" alt="logo" />
               </a>
             </div>
             <div className="flex flex-col gap-1">
@@ -53,10 +85,11 @@ const LoginForm = () => {
             </div>
           </CardHeader>
           <CardContent className="p-0">
-            <form>
+            <form onSubmit={handleLogin}>
               <FieldGroup className="gap-6">
-                <Field className="grid gap-3 md:grid-cols-2 md:gap-6">
+                <Field>
                   <Button
+                    onClick={signInWithGoogle}
                     variant="outline"
                     type="button"
                     className="text-medium h-9 cursor-pointer gap-2 rounded-lg text-sm text-card-foreground shadow-xs dark:bg-background"
@@ -67,23 +100,6 @@ const LoginForm = () => {
                       className="h-4 w-4"
                     />
                     Sign in with Google
-                  </Button>
-                  <Button
-                    variant="outline"
-                    type="button"
-                    className="text-medium h-9 cursor-pointer gap-2 rounded-lg text-sm text-card-foreground shadow-xs dark:bg-background"
-                  >
-                    <img
-                      src="https://images.shadcnspace.com/assets/svgs/icon-github.svg"
-                      alt="github icon"
-                      className="h-4 w-4 dark:hidden"
-                    />
-                    <img
-                      src="https://images.shadcnspace.com/assets/svgs/icon-github-white.svg"
-                      alt="github icon"
-                      className="hidden h-4 w-4 dark:block"
-                    />
-                    Sign in with Github
                   </Button>
                 </Field>
                 <FieldSeparator className="bg-transparent text-sm text-muted-foreground *:data-[slot=field-separator-content]:bg-card">
@@ -96,12 +112,12 @@ const LoginForm = () => {
                       htmlFor="email"
                       className="text-sm font-normal text-muted-foreground"
                     >
-                      Email*
+                      Email
                     </FieldLabel>
                     <Input
                       id="email"
                       type="email"
-                      placeholder="example@shadcnspace.com"
+                      placeholder="example@gmail.com"
                       required
                       className="h-9 shadow-xs dark:bg-background"
                     />
@@ -111,7 +127,7 @@ const LoginForm = () => {
                       htmlFor="password"
                       className="text-sm font-normal text-muted-foreground"
                     >
-                      Password*
+                      Password
                     </FieldLabel>
 
                     <Input
@@ -156,12 +172,12 @@ const LoginForm = () => {
                   </Button>
                   <FieldDescription className="text-center text-sm font-normal text-muted-foreground">
                     Don&apos;t have an account?{" "}
-                    <a
-                      href="#"
+                    <Link
+                      href="/signup"
                       className="font-medium text-card-foreground no-underline!"
                     >
                       Create an account
-                    </a>
+                    </Link>
                   </FieldDescription>
                 </Field>
               </FieldGroup>
@@ -172,5 +188,3 @@ const LoginForm = () => {
     </section>
   )
 }
-
-export default LoginForm
