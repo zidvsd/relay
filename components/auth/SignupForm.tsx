@@ -29,7 +29,7 @@ export default function SignupForm() {
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo: `${window.location.origin}/callback`,
       },
     })
   }
@@ -47,7 +47,7 @@ export default function SignupForm() {
       email,
       password,
       options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
+        emailRedirectTo: `${window.location.origin}/callback`,
       },
     })
 

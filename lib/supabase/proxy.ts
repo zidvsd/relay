@@ -1,22 +1,20 @@
 import { createServerClient } from "@supabase/ssr"
 import { NextResponse, type NextRequest } from "next/server"
-
 export async function updateSession(request: NextRequest) {
+  const path = request.nextUrl.pathname
   let supabaseResponse = NextResponse.next({
     request,
   })
 
-  // With Fluid compute, don't put this client in a global environment
-  // variable. Always create a new one on each request.
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
         getAll() {
           return request.cookies.getAll()
         },
-        setAll(cookiesToSet, headers) {
+        setAll(cookiesToSet) {
           cookiesToSet.forEach(({ name, value }) =>
             request.cookies.set(name, value)
           )
@@ -26,68 +24,70 @@ export async function updateSession(request: NextRequest) {
           cookiesToSet.forEach(({ name, value, options }) =>
             supabaseResponse.cookies.set(name, value, options)
           )
-          Object.entries(headers).forEach(([key, value]) =>
-            supabaseResponse.headers.set(key, value)
-          )
         },
       },
     }
   )
 
-  // Do not run code between createServerClient and
-  // supabase.auth.getClaims(). A simple mistake could make it very hard to debug
-  // issues with users being randomly logged out.
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
 
-  // IMPORTANT: If you remove getClaims() and you use server-side rendering
-  // with the Supabase client, your users may be randomly logged out.
-  // const { data } = await supabase.auth.getClaims()
+  const isCallbackRoute =
+    path.startsWith("/callback") || path.startsWith("/auth/callback")
+  const isPublicRoute =
+    path === "/" || path.startsWith("/pricing") || path.startsWith("/about")
+  const isProtectedRoute =
+    path.startsWith("/dashboard") ||
+    path.startsWith("/client") ||
+    path.startsWith("/freelancer")
+  const isAuthRoute = path.startsWith("/signin") || path.startsWith("/signup")
+  const isRoleSelect = path.startsWith("/role-select")
 
-  // const user = data?.claims
+  if (isCallbackRoute) return supabaseResponse
 
-  // const path = request.nextUrl.pathname
+  if (!user && isProtectedRoute) {
+    const url = request.nextUrl.clone()
+    url.pathname = "/signin"
+    return NextResponse.redirect(url)
+  }
 
-  // const isAuthRoute =
-  //   path.startsWith("/signin") ||
-  //   path.startsWith("/signup") ||
-  //   path.startsWith("/auth")
+  if (user && isAuthRoute) {
+    const url = request.nextUrl.clone()
+    url.pathname = "/dashboard"
+    return NextResponse.redirect(url)
+  }
 
-  // const isRoleSelect = path.startsWith("/role-select")
+  if (user && !isRoleSelect) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .single()
 
-  // // =========================
-  // // 1. NO USER → allow auth pages
-  // // =========================
-  // if (!user && !isAuthRoute) {
-  //   const url = request.nextUrl.clone()
-  //   url.pathname = "/signin"
-  //   return NextResponse.redirect(url)
-  // }
+    const role = profile?.role
 
-  // // =========================
-  // // 2. USER EXISTS → check role
-  // // =========================
-  // if (user) {
-  //   const { data: profile } = await supabase
-  //     .from("profiles")
-  //     .select("role")
-  //     .eq("id", user.sub)
-  //     .single()
+    const hasRole = role && role !== "null"
 
-  //   const role = profile?.role
+    if (!hasRole) {
+      return NextResponse.redirect(new URL("/role-select", request.url))
+    }
 
-  //   // no role → force role select
-  //   if (!role && !isRoleSelect) {
-  //     const url = request.nextUrl.clone()
-  //     url.pathname = "/role-select"
-  //     return NextResponse.redirect(url)
-  //   }
+    const isClientRoute = path.startsWith("/client")
 
-  //   // has role → block role page
-  //   if (role && isRoleSelect) {
-  //     const url = request.nextUrl.clone()
-  //     url.pathname = "/dashboard"
-  //     return NextResponse.redirect(url)
-  //   }
-  // }
+    if (role === "client" && !isClientRoute) {
+      return NextResponse.redirect(new URL("/client/dashboard", request.url))
+    }
 
+    if (role === "freelancer" && isClientRoute) {
+      return NextResponse.redirect(new URL("/", request.url))
+    }
+
+    if (path === "/") {
+      return NextResponse.redirect(
+        new URL(role === "freelancer" ? "/" : "/client/dashboard", request.url)
+      )
+    }
+  }
   return supabaseResponse
 }

@@ -14,13 +14,11 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import { createClient } from "@/lib/supabase/client"
-
+import { supabase } from "@/lib/supabase/supabaseClient"
 type Role = "freelancer" | "client"
 
 export default function RoleSelectPage() {
   const router = useRouter()
-  const supabase = createClient()
 
   const [pendingRole, setPendingRole] = useState<Role | null>(null)
   const [loading, setLoading] = useState(false)
@@ -42,7 +40,11 @@ export default function RoleSelectPage() {
 
     setLoading(false)
     setPendingRole(null)
-    router.push(`/${pendingRole}`)
+
+    router.refresh()
+    router.push(
+      pendingRole === "freelancer" ? "/dashboard" : "/client/dashboard"
+    )
   }
 
   const roles = [
