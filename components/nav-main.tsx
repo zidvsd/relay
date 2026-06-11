@@ -22,7 +22,8 @@ export function NavMain({
     icon?: IconKey
   }[]
 }) {
-  const { role } = useRole()
+  const { role, loading } = useRole()
+  const safeRole = role ?? "freelancer"
   const CirclePlus = iconMap.circleplus
   const Mail = iconMap.mail
   return (
@@ -31,7 +32,7 @@ export function NavMain({
         {/* Top actions */}
         <SidebarMenu>
           <SidebarMenuItem className="flex items-center gap-2">
-            <SidebarMenuButton className="cursor-pointer bg-primary hover:bg-primary">
+            <SidebarMenuButton className="cursor-pointer bg-primary text-white hover:bg-primary">
               <CirclePlus />
               <span>Add Project</span>
             </SidebarMenuButton>
@@ -52,7 +53,7 @@ export function NavMain({
               <SidebarMenuItem key={item.title}>
                 <SidebarMenuButton asChild tooltip={item.title}>
                   <Link
-                    href={`/${role}/${item.href}`}
+                    href={`/${safeRole}/${item.href}`}
                     className="flex items-center gap-2"
                   >
                     {Icon && <Icon />}

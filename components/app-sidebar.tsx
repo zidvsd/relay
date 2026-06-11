@@ -1,12 +1,11 @@
 import Logo from "@/app/icon.svg"
 import Image from "next/image"
 import Link from "next/link"
-import { NavMain, type IconKey } from "./nav-main"
+import { NavMain } from "./nav-main"
 import { NavUser } from "./nav-user"
 import { NavSecondary } from "./nav-secondary"
 import { getProfile } from "@/lib/supabase/get-profile"
 import { createClient } from "@/lib/supabase/server"
-import { useRole } from "@/hooks/use-role"
 import {
   Sidebar,
   SidebarContent,
@@ -49,18 +48,22 @@ export const data: {
 }
 
 export async function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
-  const profile = await getProfile()
   const supabase = await createClient()
 
   const {
     data: { user },
   } = await supabase.auth.getUser()
+
+  const profile = user ? await getProfile(user.id) : null
+
   const userData = {
     name: profile?.full_name || user?.email || "User",
     email: user?.email || "no-email@example.com",
     avatar: profile?.avatar_url || "/avatars/default.jpg",
   }
-
+  console.log("USER:", user)
+  console.log("APP_METADATA ROLE:", user?.app_metadata?.role)
+  console.log("PROFILE ROLE:", profile?.role)
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>

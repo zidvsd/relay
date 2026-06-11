@@ -22,9 +22,10 @@ import Image from "next/image"
 import Logo from "@/app/icon.svg"
 import { supabase } from "@/lib/supabase/supabaseClient"
 import { toast } from "sonner"
+import { useRouter } from "next/navigation"
 export default function SignupForm() {
   const [loading, setLoading] = useState(false)
-
+  const router = useRouter()
   const signUpWithGoogle = async () => {
     await supabase.auth.signInWithOAuth({
       provider: "google",
@@ -57,6 +58,7 @@ export default function SignupForm() {
       toast.error(error.message)
     } else {
       toast.success("Check your email for confirmation link!")
+      router.push("/signin")
     }
   }
 

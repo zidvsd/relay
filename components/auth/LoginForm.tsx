@@ -23,10 +23,11 @@ import Logo from "@/app/icon.svg"
 import { supabase } from "@/lib/supabase/supabaseClient"
 import { useState } from "react"
 import { toast } from "sonner"
+import { useRouter } from "next/navigation"
 
 export default function LoginForm() {
   const [loading, setLoading] = useState(false)
-
+  const router = useRouter()
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setLoading(true)
@@ -46,6 +47,7 @@ export default function LoginForm() {
       toast.error(error.message)
     } else {
       toast.success("Logged in successfully!")
+      router.push("/callback")
     }
   }
 
@@ -115,7 +117,7 @@ export default function LoginForm() {
                       Email
                     </FieldLabel>
                     <Input
-                      id="email"
+                      name="email"
                       type="email"
                       placeholder="example@gmail.com"
                       required
@@ -131,7 +133,7 @@ export default function LoginForm() {
                     </FieldLabel>
 
                     <Input
-                      id="password"
+                      name="password"
                       type="password"
                       placeholder="Enter your password"
                       required
