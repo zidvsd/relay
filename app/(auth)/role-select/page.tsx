@@ -15,6 +15,8 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 import { supabase } from "@/lib/supabase/supabaseClient"
+import { supabaseAdmin } from "@/lib/supabase/admin"
+import { setRole } from "@/actions/set-role"
 type Role = "freelancer" | "client"
 
 export default function RoleSelectPage() {
@@ -27,23 +29,16 @@ export default function RoleSelectPage() {
     if (!pendingRole) return
     setLoading(true)
 
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
-
-    if (user) {
-      await supabase
-        .from("profiles")
-        .update({ role: pendingRole })
-        .eq("id", user.id)
-    }
+    await setRole(pendingRole)
 
     setLoading(false)
     setPendingRole(null)
 
     router.refresh()
     router.push(
-      pendingRole === "freelancer" ? "/dashboard" : "/client/dashboard"
+      pendingRole === "freelancer"
+        ? "/freelancer/dashboard"
+        : "/client/dashboard"
     )
   }
 

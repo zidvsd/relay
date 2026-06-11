@@ -1,27 +1,12 @@
-"use client"
 import Logo from "@/app/icon.svg"
 import Image from "next/image"
 import Link from "next/link"
-import { NavMain } from "./nav-main"
+import { NavMain, type IconKey } from "./nav-main"
 import { NavUser } from "./nav-user"
-import { NavDocuments } from "./nav-documents"
 import { NavSecondary } from "./nav-secondary"
-import {
-  Camera,
-  BarChart3,
-  LayoutDashboard,
-  Database,
-  Sparkles,
-  FileText,
-  Folder,
-  HelpCircle,
-  Zap,
-  List,
-  Search,
-  Settings,
-  Users,
-} from "lucide-react"
-
+import { getProfile } from "@/lib/supabase/get-profile"
+import { createClient } from "@/lib/supabase/server"
+import { useRole } from "@/hooks/use-role"
 import {
   Sidebar,
   SidebarContent,
@@ -31,149 +16,73 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-
-const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
+import type { SecondaryIconKey, MainIconKey } from "@/lib/icon"
+/**
+ * STRICT TYPE FOR DATA
+ */
+export const data: {
+  navMain: {
+    title: string
+    href: string
+    icon: MainIconKey
+  }[]
+  navSecondary: {
+    title: string
+    href: string
+    icon: SecondaryIconKey
+  }[]
+} = {
   navMain: [
-    {
-      title: "Dashboard",
-      url: "#",
-      icon: LayoutDashboard,
-    },
-    {
-      title: "Lifecycle",
-      url: "#",
-      icon: List,
-    },
-    {
-      title: "Analytics",
-      url: "#",
-      icon: BarChart3,
-    },
-    {
-      title: "Projects",
-      url: "#",
-      icon: Folder,
-    },
-    {
-      title: "Team",
-      url: "#",
-      icon: Users,
-    },
+    { title: "Dashboard", href: "/dashboard", icon: "dashboard" },
+    { title: "Clients", href: "/clients", icon: "users" },
+    { title: "Projects", href: "/projects", icon: "projects" },
+    { title: "Kanban", href: "/kanban", icon: "kanban" },
+    { title: "Payments", href: "/payments", icon: "payments" },
+    { title: "Analytics", href: "/analytics", icon: "analytics" },
   ],
-  navClouds: [
-    {
-      title: "Capture",
-      icon: Camera,
-      isActive: true,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Proposal",
-      icon: FileText,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Prompts",
-      icon: Sparkles,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-  ],
+
   navSecondary: [
-    {
-      title: "Settings",
-      url: "#",
-      icon: Settings,
-    },
-    {
-      title: "Get Help",
-      url: "#",
-      icon: HelpCircle,
-    },
-    {
-      title: "Search",
-      url: "#",
-      icon: Search,
-    },
-  ],
-  documents: [
-    {
-      name: "Data Library",
-      url: "#",
-      icon: Database,
-    },
-    {
-      name: "Reports",
-      url: "#",
-      icon: BarChart3,
-    },
-    {
-      name: "Word Assistant",
-      url: "#",
-      icon: FileText,
-    },
+    { title: "Settings", href: "/settings", icon: "settings" },
+    { title: "Get Help", href: "/help", icon: "help" },
+    { title: "Search", href: "/search", icon: "search" },
   ],
 }
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export async function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
+  const profile = await getProfile()
+  const supabase = await createClient()
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  const userData = {
+    name: profile?.full_name || user?.email || "User",
+    email: user?.email || "no-email@example.com",
+    avatar: profile?.avatar_url || "/avatars/default.jpg",
+  }
+
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton
-              asChild
-              className="data-[slot=sidebar-menu-button]:p-1.5!"
-            >
-              <Link href="/" className="flex items-center gap-2">
+            <SidebarMenuButton asChild>
+              <Link href={`/dashboard`} className="flex items-center gap-2">
                 <Image src={Logo} alt="logo" className="w-3" />
-                <span className="text-base font-semibold">Relay</span>
+                <span className="font-semibold">Relay</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
+
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavDocuments items={data.documents} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
+
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={userData} />
       </SidebarFooter>
     </Sidebar>
   )

@@ -72,22 +72,27 @@ export async function updateSession(request: NextRequest) {
     if (!hasRole) {
       return NextResponse.redirect(new URL("/role-select", request.url))
     }
-
-    const isClientRoute = path.startsWith("/client")
-
-    if (role === "client" && !isClientRoute) {
-      return NextResponse.redirect(new URL("/client/dashboard", request.url))
-    }
-
-    if (role === "freelancer" && isClientRoute) {
-      return NextResponse.redirect(new URL("/", request.url))
-    }
-
-    if (path === "/") {
+    if (path === "/dashboard") {
       return NextResponse.redirect(
-        new URL(role === "freelancer" ? "/" : "/client/dashboard", request.url)
+        new URL(
+          role === "client" ? "/client/dashboard" : "/freelancer/dashboard",
+          request.url
+        )
       )
     }
+
+    // Block freelancers from client routes
+    if (role === "freelancer" && path.startsWith("/client")) {
+      return NextResponse.redirect(
+        new URL("/freelancer/dashboard", request.url)
+      )
+    }
+
+    // Block clients from freelancer routes
+    if (role === "client" && path.startsWith("/freelancer")) {
+      return NextResponse.redirect(new URL("/client/dashboard", request.url))
+    }
   }
+
   return supabaseResponse
 }
