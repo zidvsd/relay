@@ -32,14 +32,13 @@ export const data: {
   }[]
 } = {
   navMain: [
-    { title: "Dashboard", href: "/dashboard", icon: "dashboard" },
-    { title: "Clients", href: "/clients", icon: "users" },
-    { title: "Projects", href: "/projects", icon: "projects" },
-    { title: "Kanban", href: "/kanban", icon: "kanban" },
-    { title: "Payments", href: "/payments", icon: "payments" },
-    { title: "Analytics", href: "/analytics", icon: "analytics" },
+    { title: "Dashboard", href: "dashboard", icon: "dashboard" },
+    { title: "Clients", href: "clients", icon: "users" },
+    { title: "Projects", href: "projects", icon: "projects" },
+    { title: "Kanban", href: "kanban", icon: "kanban" },
+    { title: "Payments", href: "payments", icon: "payments" },
+    { title: "Analytics", href: "analytics", icon: "analytics" },
   ],
-
   navSecondary: [
     { title: "Settings", href: "/settings", icon: "settings" },
     { title: "Get Help", href: "/help", icon: "help" },
@@ -59,11 +58,9 @@ export async function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
   const userData = {
     name: profile?.full_name || user?.email || "User",
     email: user?.email || "no-email@example.com",
-    avatar: profile?.avatar_url || "/avatars/default.jpg",
+    avatar: user?.user_metadata?.picture || "/avatars/default.jpg",
   }
-  console.log("USER:", user)
-  console.log("APP_METADATA ROLE:", user?.app_metadata?.role)
-  console.log("PROFILE ROLE:", profile?.role)
+
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>

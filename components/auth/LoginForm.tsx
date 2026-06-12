@@ -24,30 +24,33 @@ import { supabase } from "@/lib/supabase/supabaseClient"
 import { useState } from "react"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
-
+import { Spinner } from "../ui/spinner"
 export default function LoginForm() {
   const [loading, setLoading] = useState(false)
   const router = useRouter()
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setLoading(true)
+    try {
+      const formData = new FormData(e.currentTarget)
 
-    const formData = new FormData(e.currentTarget)
+      const email = formData.get("email") as string
+      const password = formData.get("password") as string
 
-    const email = formData.get("email") as string
-    const password = formData.get("password") as string
+      const { error } = await supabase.auth.signInWithPassword({
+        email: email,
+        password: password,
+      })
+      setLoading(false)
+      if (error) {
+        toast.error(error.message)
 
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: email,
-      password: password,
-    })
-    setLoading(false)
-
-    if (error) {
-      toast.error(error.message)
-    } else {
+        return
+      }
       toast.success("Logged in successfully!")
       router.push("/callback")
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -94,6 +97,7 @@ export default function LoginForm() {
                     onClick={signInWithGoogle}
                     variant="outline"
                     type="button"
+                    disabled={loading}
                     className="text-medium h-9 cursor-pointer gap-2 rounded-lg text-sm text-card-foreground shadow-xs dark:bg-background"
                   >
                     <img
@@ -167,10 +171,18 @@ export default function LoginForm() {
                 <Field className="gap-4">
                   <Button
                     type="submit"
-                    size={"lg"}
-                    className="h-10 cursor-pointer rounded-lg hover:bg-primary/80"
+                    size="lg"
+                    disabled={loading}
+                    className="h-10 cursor-pointer rounded-lg hover:bg-primary/80 disabled:cursor-not-allowed disabled:opacity-70"
                   >
-                    Sign in
+                    {loading ? (
+                      <span className="flex items-center gap-2">
+                        <Spinner className="h-4 w-4 animate-spin" />
+                        Signing in...
+                      </span>
+                    ) : (
+                      "Sign in"
+                    )}
                   </Button>
                   <FieldDescription className="text-center text-sm font-normal text-muted-foreground">
                     Don&apos;t have an account?{" "}
