@@ -60,7 +60,11 @@ export async function AppSidebar({
   }
 
   return (
-    <Sidebar collapsible="offcanvas" {...props}>
+    <Sidebar
+      collapsible="offcanvas"
+      className="top-14 h-[calc(100svh-4rem)]"
+      {...props}
+    >
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>

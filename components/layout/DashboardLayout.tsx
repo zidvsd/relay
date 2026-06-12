@@ -19,13 +19,18 @@ export default function DashboardLayout({
   return (
     <TooltipProvider>
       <SidebarProvider>
-        <div className="flex min-h-screen w-full">
+        <DashboardNavbar
+          role={role}
+          user={user}
+          profile={profile}
+          className="fixed top-0 right-0 left-0 z-50 w-full"
+        />
+
+        <div className="flex min-h-screen w-full pt-16">
           <AppSidebar role={role} user={user} profile={profile} />
 
           <SidebarInset className="flex flex-1 flex-col">
-            <DashboardNavbar role={role} user={user} profile={profile} />
-
-            <main className="flex-1 pt-16">{children}</main>
+            <main className="flex-1">{children}</main>
           </SidebarInset>
         </div>
       </SidebarProvider>

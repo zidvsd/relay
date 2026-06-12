@@ -24,16 +24,19 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { cn } from "@/lib/utils"
 interface DashboardNavbarProps {
   role: "freelancer" | "client"
   user: any
   profile: any
+  className?: string
 }
 
 export default function DashboardNavbar({
   role,
   user,
   profile,
+  className,
 }: DashboardNavbarProps) {
   const [query, setQuery] = useState("")
   const { handleLogout, loading } = useLogout()
@@ -49,7 +52,12 @@ export default function DashboardNavbar({
   }
 
   return (
-    <header className="bg-surface/80 border-outline-variant/30 fixed top-0 right-0 left-0 z-40 flex items-center justify-between border-b px-6 py-3 shadow-sm backdrop-blur-md">
+    <header
+      className={cn(
+        "bg-surface/80 border-outline-variant/30 flex items-center justify-between border-b px-6 py-3 shadow-sm backdrop-blur-md",
+        className
+      )}
+    >
       {/* SEARCH */}
       <div className="flex flex-1 items-center gap-8">
         <div className="relative hidden max-w-md flex-1 items-center md:flex">
@@ -120,7 +128,7 @@ export default function DashboardNavbar({
                   <span className="truncate text-xs text-muted-foreground">
                     {user?.email}
                   </span>
-                  <span className="mt-1 truncate text-xs font-medium text-foreground">
+                  <span className="-primary mt-1 truncate text-xs font-semibold text-primary">
                     {role}
                   </span>
                 </div>
