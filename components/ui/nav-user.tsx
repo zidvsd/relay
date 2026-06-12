@@ -1,8 +1,16 @@
 "use client"
 
-import { CreditCard, MoreVertical, LogOut, Bell, User } from "lucide-react"
-import LogoutButton from "./logout"
+import {
+  CreditCard,
+  MoreVertical,
+  LogOut,
+  Bell,
+  User,
+  LogOutIcon,
+} from "lucide-react"
+import { useLogout } from "@/hooks/use-logout"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Spinner } from "./spinner"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -29,7 +37,7 @@ export function NavUser({
   }
 }) {
   const { isMobile } = useSidebar()
-
+  const { handleLogout, loading } = useLogout()
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -102,8 +110,21 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <LogoutButton />
+            <DropdownMenuItem
+              disabled={loading}
+              className="text-destructive"
+              onSelect={(e) => {
+                e.preventDefault()
+                if (!loading) handleLogout()
+              }}
+            >
+              {loading ? (
+                <Spinner className="size-4" />
+              ) : (
+                <LogOutIcon className="size-4" />
+              )}
+
+              {loading ? "Logging out..." : "Logout"}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
