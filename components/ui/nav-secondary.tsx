@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/sidebar"
 import { SecondaryIconKey } from "@/lib/icon"
 import { Settings, CircleHelp, Search } from "lucide-react"
-
+import { useRole } from "@/hooks/use-role"
 const iconMap = {
   settings: Settings,
   help: CircleHelp,
@@ -27,6 +27,7 @@ export function NavSecondary({
     icon: SecondaryIconKey
   }[]
 } & React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
+  const { role } = useRole()
   return (
     <SidebarGroup {...props}>
       <SidebarGroupContent>
@@ -37,7 +38,10 @@ export function NavSecondary({
             return (
               <SidebarMenuItem key={item.title}>
                 <SidebarMenuButton asChild>
-                  <Link href={item.href} className="flex items-center gap-2">
+                  <Link
+                    href={`/${role}/${item.href}`}
+                    className="flex items-center gap-2"
+                  >
                     {Icon && <Icon />}
                     <span>{item.title}</span>
                   </Link>

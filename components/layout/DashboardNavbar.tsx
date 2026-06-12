@@ -5,7 +5,7 @@ import { Search, Bell, Settings } from "lucide-react"
 import { Input } from "../ui/input"
 import { Button } from "../ui/button"
 import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar"
-
+import Link from "next/link"
 interface DashboardNavbarProps {
   role: "freelancer" | "client"
   user: any
@@ -44,12 +44,15 @@ export default function DashboardNavbar({
       </div>
 
       <div className="flex items-center gap-4">
-        <Button variant="ghost">
-          <Bell />
+        <Button asChild variant="ghost">
+          <Link href={`/${role}/notifications`}>
+            <Bell />
+          </Link>
         </Button>
-
-        <Button variant="ghost">
-          <Settings />
+        <Button asChild variant="ghost">
+          <Link href={`/${role}/settings`}>
+            <Settings />
+          </Link>
         </Button>
 
         <Avatar>
