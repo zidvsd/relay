@@ -4,8 +4,7 @@ import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { LogOut } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { supabase } from "@/lib/supabase/supabaseClient"
-
+import { supabase } from "@/lib/supabase/client"
 export default function LogoutButton() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)

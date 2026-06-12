@@ -4,8 +4,6 @@ import Link from "next/link"
 import { NavMain } from "./nav-main"
 import { NavUser } from "./nav-user"
 import { NavSecondary } from "./nav-secondary"
-import { getProfile } from "@/lib/supabase/get-profile"
-import { createClient } from "@/lib/supabase/server"
 import {
   Sidebar,
   SidebarContent,
@@ -16,9 +14,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import type { SecondaryIconKey, MainIconKey } from "@/lib/icon"
-/**
- * STRICT TYPE FOR DATA
- */
+
 export const data: {
   navMain: {
     title: string
@@ -45,16 +41,18 @@ export const data: {
     { title: "Search", href: "/search", icon: "search" },
   ],
 }
+interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
+  role: "freelancer" | "client"
+  user: any
+  profile: any
+}
 
-export async function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
-  const supabase = await createClient()
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  const profile = user ? await getProfile(user.id) : null
-
+export async function AppSidebar({
+  role,
+  user,
+  profile,
+  ...props
+}: AppSidebarProps) {
   const userData = {
     name: profile?.full_name || user?.email || "User",
     email: user?.email || "no-email@example.com",

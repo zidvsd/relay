@@ -20,7 +20,7 @@ import {
 import { Input } from "@/components/ui/input"
 import Image from "next/image"
 import Logo from "@/app/icon.svg"
-import { supabase } from "@/lib/supabase/supabaseClient"
+import { supabase } from "@/lib/supabase/client"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
 export default function SignupForm() {

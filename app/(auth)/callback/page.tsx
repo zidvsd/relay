@@ -2,7 +2,7 @@
 
 import { useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { supabase } from "@/lib/supabase/supabaseClient"
+import { supabase } from "@/lib/supabase/client"
 import { Spinner } from "@/components/ui/spinner"
 
 export default function AuthCallback() {

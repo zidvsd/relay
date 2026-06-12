@@ -1,8 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { supabase } from "@/lib/supabase/supabaseClient"
-
+import { supabase } from "@/lib/supabase/client"
 type Role = "freelancer" | "client" | null
 
 export function useRole() {
