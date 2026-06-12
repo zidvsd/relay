@@ -5,6 +5,8 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import Logo from "@/app/icon.svg"
 import Image from "next/image"
+import { AvatarDropdown } from "../AvatarDropdown"
+import { useAuth } from "@/hooks/use-auth"
 const navLinks = [
   { label: "Home", href: "#" },
   { label: "Features", href: "#features" },
@@ -13,6 +15,12 @@ const navLinks = [
 ]
 
 export function Navbar() {
+  const { session, loading, role, user } = useAuth()
+  const userData = {
+    name: user?.user_metadata?.name || user?.email || "User",
+    avatar: user?.user_metadata?.picture || "/avatars/default.jpg",
+  }
+  console.log(session, user, userData)
   const [active, setActive] = useState("#")
 
   return (
@@ -52,16 +60,24 @@ export function Navbar() {
 
       {/* Actions */}
       <div className="flex items-center gap-3">
-        <Button variant="ghost" size="lg" className="hidden sm:block">
-          <Link href="/signin">Login</Link>
-        </Button>
+        <div className="flex items-center gap-3">
+          {session && user ? (
+            <AvatarDropdown role={role} user={user} userData={userData} />
+          ) : (
+            <>
+              <Button variant="ghost" size="lg" className="hidden sm:block">
+                <Link href="/signin">Login</Link>
+              </Button>
 
-        <Button
-          size="lg"
-          className="rounded-xl bg-linear-to-r from-primary to-chart-2 text-primary-foreground shadow-md hover:brightness-110"
-        >
-          <Link href="/signup"> Get Started</Link>
-        </Button>
+              <Button
+                size="lg"
+                className="rounded-xl bg-linear-to-r from-primary to-chart-2 text-primary-foreground shadow-md hover:brightness-110"
+              >
+                <Link href="/signup">Get Started</Link>
+              </Button>
+            </>
+          )}
+        </div>
       </div>
     </nav>
   )

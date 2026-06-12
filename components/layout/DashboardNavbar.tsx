@@ -1,30 +1,13 @@
 "use client"
 
 import { useState } from "react"
-import {
-  Search,
-  Bell,
-  Settings,
-  User,
-  LogOutIcon,
-  WalletCards,
-} from "lucide-react"
-import { Spinner } from "../ui/spinner"
+import { Search, Bell, Settings } from "lucide-react"
 import { Input } from "../ui/input"
 import { Button } from "../ui/button"
-import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar"
 import Link from "next/link"
-import { useLogout } from "@/hooks/use-logout"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import { cn } from "@/lib/utils"
+import { AvatarDropdown } from "../AvatarDropdown"
+
 interface DashboardNavbarProps {
   role: "freelancer" | "client"
   user: any
@@ -39,7 +22,6 @@ export default function DashboardNavbar({
   className,
 }: DashboardNavbarProps) {
   const [query, setQuery] = useState("")
-  const { handleLogout, loading } = useLogout()
 
   const placeholder =
     role === "freelancer"
@@ -73,112 +55,19 @@ export default function DashboardNavbar({
 
       {/* RIGHT ACTIONS */}
       <div className="flex items-center gap-4">
-        {/* NOTIFICATIONS */}
         <Button asChild variant="ghost">
           <Link href={`/${role}/notifications`}>
             <Bell />
           </Link>
         </Button>
 
-        {/* SETTINGS */}
         <Button asChild variant="ghost">
           <Link href={`/${role}/settings`}>
             <Settings />
           </Link>
         </Button>
 
-        {/* AVATAR DROPDOWN */}
-        {/* AVATAR DROPDOWN */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <button className="rounded-full focus:outline-none">
-              <Avatar className="cursor-pointer">
-                <AvatarImage src={userData.avatar} />
-                <AvatarFallback>
-                  {userData.name
-                    .split(" ")
-                    .map((n: string) => n[0])
-                    .join("")
-                    .toUpperCase()
-                    .slice(0, 2)}
-                </AvatarFallback>
-              </Avatar>
-            </button>
-          </DropdownMenuTrigger>
-
-          <DropdownMenuContent className="w-60" align="end" sideOffset={8}>
-            <DropdownMenuLabel className="font-normal">
-              <div className="flex items-center gap-3 py-1">
-                <Avatar className="size-9">
-                  <AvatarImage src={userData.avatar} />
-                  <AvatarFallback>
-                    {userData.name
-                      .split(" ")
-                      .map((n: string) => n[0])
-                      .join("")
-                      .toUpperCase()
-                      .slice(0, 2)}
-                  </AvatarFallback>
-                </Avatar>
-
-                <div className="flex flex-col overflow-hidden">
-                  <span className="truncate text-sm font-medium">
-                    {userData.name}
-                  </span>
-                  <span className="truncate text-xs text-muted-foreground">
-                    {user?.email}
-                  </span>
-                  <span className="-primary mt-1 truncate text-xs font-semibold text-primary">
-                    {role}
-                  </span>
-                </div>
-              </div>
-            </DropdownMenuLabel>
-
-            <DropdownMenuSeparator />
-
-            <DropdownMenuGroup>
-              <DropdownMenuItem asChild>
-                <Link
-                  href={`/${role}/profile`}
-                  className="flex items-center gap-2"
-                >
-                  <User className="size-4 text-muted-foreground" />
-                  Account
-                </Link>
-              </DropdownMenuItem>
-
-              <DropdownMenuItem asChild>
-                <Link
-                  href={`/${role}/billing`}
-                  className="flex items-center gap-2"
-                >
-                  <WalletCards className="size-4 text-muted-foreground" />
-                  Billing
-                </Link>
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-
-            <DropdownMenuSeparator />
-
-            <DropdownMenuItem
-              disabled={loading}
-              className="text-destructive"
-              onSelect={(e) => {
-                e.preventDefault()
-                if (!loading) handleLogout()
-              }}
-            >
-              {loading ? (
-                <Spinner className="size-4" />
-              ) : (
-                <LogOutIcon className="size-4" />
-              )}
-
-              {loading ? "Logging out..." : "Logout"}
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <AvatarDropdown role={role} user={user} userData={userData} />
       </div>
     </header>
   )
