@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/sidebar"
 import { SecondaryIconKey } from "@/lib/icon"
 import { Settings, CircleHelp, Search } from "lucide-react"
-import { useRole } from "@/hooks/use-role"
+import { useAuth } from "@/hooks/use-auth"
 const iconMap = {
   settings: Settings,
   help: CircleHelp,
@@ -27,7 +27,7 @@ export function NavSecondary({
     icon: SecondaryIconKey
   }[]
 } & React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
-  const { role } = useRole()
+  const { role } = useAuth()
   return (
     <SidebarGroup {...props}>
       <SidebarGroupContent>

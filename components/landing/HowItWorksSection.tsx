@@ -23,7 +23,7 @@ const steps = [
 
 export function HowItWorksSection() {
   return (
-    <section id="how-it-works" className="py-24">
+    <section id="how-it-works" className="bg-primary/5 py-24">
       <div className="container">
         <div className="flex flex-col items-center gap-16 lg:flex-row">
           {/* Left: Steps */}

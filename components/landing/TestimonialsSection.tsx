@@ -41,7 +41,7 @@ function StarRow({ size = 4 }: { size?: number }) {
 
 export function TestimonialsSection() {
   return (
-    <section id="testimonials" className="bg-card py-24">
+    <section id="testimonials" className="bg-primary/5 py-24">
       <div className="container">
         {/* Header */}
         <div className="mb-16 text-center">

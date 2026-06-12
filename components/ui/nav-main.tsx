@@ -1,7 +1,7 @@
 "use client"
 import Link from "next/link"
 import { iconMap } from "@/lib/icon"
-import { useRole } from "@/hooks/use-role"
+import { useAuth } from "@/hooks/use-auth"
 import { cn } from "@/lib/utils"
 import {
   SidebarGroup,
@@ -22,9 +22,8 @@ export function NavMain({
     icon?: IconKey
   }[]
 }) {
-  const { role } = useRole()
+  const { role } = useAuth()
   const pathname = usePathname()
-  console.log(pathname)
   const safeRole = role ?? "freelancer"
   const CirclePlus = iconMap.circleplus
   const Mail = iconMap.mail
