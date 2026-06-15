@@ -1,20 +1,11 @@
 import DashboardLayout from "@/components/layout/DashboardLayout"
-import { getProfile } from "@/actions/profile"
-import { createClient } from "@/lib/supabase/server"
+import { verifySession } from "@/lib/dal"
 export default async function Layout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  const profile = user ? await getProfile(user.id) : null
-
-  const role = profile?.role ?? "client"
-
+  const { user, profile, role } = await verifySession()
   return (
     <DashboardLayout role={role} user={user} profile={profile}>
       {children}

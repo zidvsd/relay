@@ -33,65 +33,68 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  const isCallbackRoute =
-    path.startsWith("/callback") || path.startsWith("/auth/callback")
-  const isPublicRoute =
-    path === "/" || path.startsWith("/pricing") || path.startsWith("/about")
-  const isProtectedRoute =
-    path.startsWith("/dashboard") ||
-    path.startsWith("/client") ||
-    path.startsWith("/freelancer")
-  const isAuthRoute = path.startsWith("/signin") || path.startsWith("/signup")
-  const isRoleSelect = path.startsWith("/role-select")
-
-  if (isCallbackRoute) return supabaseResponse
-
-  if (!user && isProtectedRoute) {
-    const url = request.nextUrl.clone()
-    url.pathname = "/signin"
-    return NextResponse.redirect(url)
+  const is = {
+    callback: path.startsWith("/auth/callback") || path.startsWith("/callback"),
+    public:
+      path === "/" || path.startsWith("/pricing") || path.startsWith("/about"),
+    protected:
+      path.startsWith("/dashboard") ||
+      path.startsWith("/client") ||
+      path.startsWith("/freelancer"),
+    auth: path.startsWith("/signin") || path.startsWith("/signup"),
+    roleSelect: path.startsWith("/role-select"),
+    dashboard: path === "/dashboard",
   }
 
-  if (user && isAuthRoute) {
-    const url = request.nextUrl.clone()
-    url.pathname = "/dashboard"
-    return NextResponse.redirect(url)
-  }
+  if (is.callback) return supabaseResponse
 
-  if (user && !isRoleSelect) {
+  if (!user && is.protected) {
+    return NextResponse.redirect(new URL("/signin", request.url))
+  }
+  if (!user) return supabaseResponse
+
+  let role = request.cookies.get("user_role")?.value
+
+  if (!role) {
     const { data: profile } = await supabase
       .from("profiles")
       .select("role")
       .eq("id", user.id)
       .single()
 
-    const role = profile?.role
+    role = profile?.role ?? undefined
 
-    const hasRole = role && role !== "null"
+    // Sync the cookie so subsequent requests don't hit the DB
+    if (role) {
+      supabaseResponse.cookies.set("user_role", role, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        path: "/",
+        maxAge: 60 * 60 * 24 * 7,
+      })
+    }
+  }
 
-    if (!hasRole) {
-      return NextResponse.redirect(new URL("/role-select", request.url))
-    }
-    if (path === "/dashboard") {
-      return NextResponse.redirect(
-        new URL(
-          role === "client" ? "/client/dashboard" : "/freelancer/dashboard",
-          request.url
-        )
-      )
-    }
+  if (user && is.auth) {
+    const dest = role ? `/${role}/dashboard` : "/role-select"
+    return NextResponse.redirect(new URL(dest, request.url))
+  }
 
-    // Block freelancers from client routes
-    if (role === "freelancer" && path.startsWith("/client")) {
-      return NextResponse.redirect(
-        new URL("/freelancer/dashboard", request.url)
-      )
-    }
+  if (user && !role && !is.roleSelect && !is.public) {
+    return NextResponse.redirect(new URL("/role-select", request.url))
+  }
 
-    // Block clients from freelancer routes
-    if (role === "client" && path.startsWith("/freelancer")) {
-      return NextResponse.redirect(new URL("/client/dashboard", request.url))
-    }
+  if (user && role && is.dashboard) {
+    return NextResponse.redirect(new URL(`/${role}/dashboard`, request.url))
+  }
+
+  if (role === "freelancer" && path.startsWith("/client")) {
+    return NextResponse.redirect(new URL("/freelancer/dashboard", request.url))
+  }
+
+  if (role === "client" && path.startsWith("/freelancer")) {
+    return NextResponse.redirect(new URL("/client/dashboard", request.url))
   }
 
   return supabaseResponse

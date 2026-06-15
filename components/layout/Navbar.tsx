@@ -20,7 +20,7 @@ export function Navbar() {
     name: user?.user_metadata?.name || user?.email || "User",
     avatar: user?.user_metadata?.picture || "/avatars/default.jpg",
   }
-  console.log(session, user, userData)
+
   const [active, setActive] = useState("#")
 
   return (

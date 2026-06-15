@@ -23,24 +23,16 @@ export default function RoleSelectPage() {
 
   const [pendingRole, setPendingRole] = useState<Role | null>(null)
   const [loading, setLoading] = useState(false)
-async function confirmRole() {
-  if (!pendingRole) return
-  setLoading(true)
+  async function confirmRole() {
+    if (!pendingRole) return
+    setLoading(true)
 
-  try {
-    await setRole(pendingRole)
-
-    setPendingRole(null)
-
-    router.push(
-      pendingRole === "freelancer"
-        ? "/freelancer/dashboard"
-        : "/client/dashboard"
-    )
-  } finally {
-    setLoading(false)
+    try {
+      await setRole(pendingRole)
+    } catch {
+      setLoading(false)
+    }
   }
-}
 
   const roles = [
     {

@@ -10,13 +10,12 @@ export default function AuthCallback() {
 
   useEffect(() => {
     const run = async () => {
-      const { data } = await supabase.auth.getSession()
+      const code = new URLSearchParams(window.location.search).get("code")
 
-      if (data.session) {
-        router.replace("/dashboard")
-      } else {
-        router.replace("/signin")
+      if (code) {
+        await supabase.auth.exchangeCodeForSession(code)
       }
+      router.replace("/dashboard")
     }
 
     run()

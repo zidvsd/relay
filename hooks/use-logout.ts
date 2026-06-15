@@ -3,7 +3,6 @@
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { supabase } from "@/lib/supabase/client"
-
 export function useLogout() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
@@ -11,7 +10,8 @@ export function useLogout() {
   const handleLogout = async () => {
     setLoading(true)
     try {
-      await supabase.auth.signOut({ scope: "local" })
+      await supabase.auth.signOut({ scope: "global" })
+      await fetch("/api/auth/logout", { method: "POST" })
       router.refresh()
       router.replace("/signin")
     } finally {
