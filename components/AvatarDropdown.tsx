@@ -74,7 +74,7 @@ export function AvatarDropdown({ role, user, userData }: AvatarDropdownProps) {
           <DropdownMenuItem asChild>
             <Link href={`/${role}/profile`} className="flex items-center gap-2">
               <User className="size-4 text-muted-foreground" />
-              Account
+              Profile
             </Link>
           </DropdownMenuItem>
 

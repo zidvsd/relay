@@ -1,13 +1,7 @@
 "use client"
 
-import {
-  CreditCard,
-  MoreVertical,
-  LogOut,
-  Bell,
-  User,
-  LogOutIcon,
-} from "lucide-react"
+import { CreditCard, MoreVertical, Bell, User, LogOutIcon } from "lucide-react"
+import Link from "next/link"
 import { useLogout } from "@/hooks/use-logout"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Spinner } from "./spinner"
@@ -29,14 +23,16 @@ import {
 
 export function NavUser({
   user,
+  role,
 }: {
   user: {
     name: string
     email: string
     avatar: string
   }
+  role: string
 }) {
-  const { isMobile } = useSidebar()
+  const { isMobile, setOpenMobile } = useSidebar()
   const { handleLogout, loading } = useLogout()
   return (
     <SidebarMenu>
@@ -96,18 +92,24 @@ export function NavUser({
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <User />
-                Account
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <CreditCard />
-                Billing
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Bell />
-                Notifications
-              </DropdownMenuItem>
+              <Link href={`/${role}/profile`} onClick={() => isMobile && setOpenMobile(false)}>
+                <DropdownMenuItem>
+                  <User />
+                  Account
+                </DropdownMenuItem>
+              </Link>
+              <Link href={`/${role}/billing`} onClick={() => isMobile && setOpenMobile(false)}>
+                <DropdownMenuItem>
+                  <CreditCard />
+                  Billing
+                </DropdownMenuItem>
+              </Link>
+              <Link href={`/${role}/notifications`} onClick={() => isMobile && setOpenMobile(false)}>
+                <DropdownMenuItem>
+                  <Bell />
+                  Notifications
+                </DropdownMenuItem>
+              </Link>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem

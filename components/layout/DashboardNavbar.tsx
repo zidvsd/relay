@@ -7,7 +7,8 @@ import { Button } from "../ui/button"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { AvatarDropdown } from "../AvatarDropdown"
-
+import { SidebarTrigger } from "../ui/sidebar"
+import { useSidebar } from "../ui/sidebar"
 interface DashboardNavbarProps {
   role: "freelancer" | "client"
   user: any
@@ -22,7 +23,7 @@ export default function DashboardNavbar({
   className,
 }: DashboardNavbarProps) {
   const [query, setQuery] = useState("")
-
+  const { setOpen } = useSidebar()
   const placeholder =
     role === "freelancer"
       ? "Search projects, clients or invoices..."
@@ -40,6 +41,7 @@ export default function DashboardNavbar({
         className
       )}
     >
+      <SidebarTrigger className="md:hidden" />
       {/* SEARCH */}
       <div className="flex flex-1 items-center gap-8">
         <div className="relative hidden max-w-md flex-1 items-center md:flex">

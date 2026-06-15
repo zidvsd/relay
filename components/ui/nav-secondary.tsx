@@ -1,45 +1,38 @@
 "use client"
 
 import Link from "next/link"
+import { iconMap } from "@/lib/icon"
+import { useAuth } from "@/hooks/use-auth"
 import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar"
-import { SecondaryIconKey } from "@/lib/icon"
-import { Settings, CircleHelp, Search } from "lucide-react"
-import { useAuth } from "@/hooks/use-auth"
-const iconMap = {
-  settings: Settings,
-  help: CircleHelp,
-  search: Search,
-}
+import type { NavItem } from "@/constants/nav-items"
 
 export function NavSecondary({
   items,
   ...props
-}: {
-  items: {
-    title: string
-    href: string
-    icon: SecondaryIconKey
-  }[]
-} & React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
+}: { items: NavItem[] } & React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
   const { role } = useAuth()
+  const { setOpenMobile, isMobile } = useSidebar()
+  const safeRole = role ?? "freelancer"
+
   return (
     <SidebarGroup {...props}>
       <SidebarGroupContent>
         <SidebarMenu>
           {items.map((item) => {
-            const Icon = iconMap[item.icon]
-
+            const Icon = item.icon ? iconMap[item.icon] : null
             return (
               <SidebarMenuItem key={item.title}>
                 <SidebarMenuButton asChild>
                   <Link
-                    href={`/${role}/${item.href}`}
+                    href={`/${safeRole}/${item.href}`}
+                    onClick={() => isMobile && setOpenMobile(false)}
                     className="flex items-center gap-2"
                   >
                     {Icon && <Icon />}

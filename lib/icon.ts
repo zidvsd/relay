@@ -1,40 +1,31 @@
 import {
   LayoutDashboard,
   Users,
-  FolderKanban,
-  KanbanSquare,
+  Folder,
+  Kanban,
   CreditCard,
-  ChartColumn,
+  BarChart3,
+  CirclePlus,
+  Mail,
   Settings,
   CircleHelp,
   Search,
-  CirclePlus,
-  Mail,
+  type LucideIcon,
 } from "lucide-react"
 
 export const iconMap = {
   dashboard: LayoutDashboard,
   users: Users,
-  projects: FolderKanban,
-  kanban: KanbanSquare,
+  projects: Folder,
+  kanban: Kanban,
   payments: CreditCard,
-  analytics: ChartColumn,
+  analytics: BarChart3,
+  circleplus: CirclePlus,
+  mail: Mail,
   settings: Settings,
   help: CircleHelp,
   search: Search,
-  circleplus: CirclePlus,
-  mail: Mail,
-}
-export type MainIconKey =
-  | "dashboard"
-  | "users"
-  | "projects"
-  | "kanban"
-  | "payments"
-  | "analytics"
-  | "circleplus"
-  | "mail"
-
-export type SecondaryIconKey = "settings" | "help" | "search"
+} as const
 
 export type IconKey = keyof typeof iconMap
+export type { LucideIcon }
