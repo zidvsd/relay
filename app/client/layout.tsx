@@ -1,5 +1,5 @@
 import DashboardLayout from "@/components/layout/DashboardLayout"
-import { getProfile } from "@/services/profile"
+import { getProfile } from "@/actions/profile"
 import { createClient } from "@/lib/supabase/server"
 export default async function Layout({
   children,
