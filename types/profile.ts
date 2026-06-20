@@ -3,4 +3,5 @@ export type Profile = {
   full_name: string
   avatar_url: string | null
   role: string
+  email: string
 }

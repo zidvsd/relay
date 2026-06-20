@@ -13,7 +13,7 @@ export const verifySession = cache(async () => {
 
   const { data: profile, error: profileError } = await supabase
     .from("profiles")
-    .select("role, full_name")
+    .select("role, full_name, email")
     .eq("id", user.id)
     .single()
 
