@@ -5,16 +5,15 @@ import { NavMain } from "./nav-main"
 import { NavUser } from "./nav-user"
 import { NavSecondary } from "./nav-secondary"
 import { getNavItems } from "@/constants/nav-items"
+import { SidebarLogo } from "./sidebar-logo"
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
   SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
+  SidebarTrigger,
 } from "@/components/ui/sidebar"
-
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
   role: "freelancer" | "client"
   user: any
@@ -28,7 +27,6 @@ export async function AppSidebar({
   ...props
 }: AppSidebarProps) {
   const { main, secondary } = getNavItems(role)
-
   const userData = {
     name: profile?.full_name ?? user?.email ?? "User",
     email: user?.email ?? "no-email@example.com",
@@ -37,16 +35,14 @@ export async function AppSidebar({
 
   return (
     <Sidebar
-      collapsible="offcanvas"
+      collapsible="icon"
       className="top-14 h-[calc(100svh-4rem)]"
       {...props}
     >
       <SidebarHeader>
-        <SidebarMenu>
-          <Link href="/" className="flex items-center gap-2">
-            <Image src={Logo} alt="Relay logo" className="w-3" />
-            <span className="font-semibold">Relay</span>
-          </Link>
+        <SidebarMenu className="flex flex-row-reverse justify-between gap-2 group-data-[collapsible=icon]:items-center ">
+          <SidebarTrigger className="p-0 text-muted-foreground data-[active=true]:text-foreground" />
+          <SidebarLogo />
         </SidebarMenu>
       </SidebarHeader>
 
